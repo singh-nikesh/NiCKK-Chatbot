@@ -1,0 +1,167 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NiCKK</title>
+  <!-- Linking Google Fonts For Icons -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@32,400,0,0" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <!-- Highlight.js for Code Styling -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=check_circle" />
+  <script>hljs.highlightAll();</script>
+
+</head>
+
+<body>
+  <header class="fixed-header">
+    <!-- Custom Model Selector -->
+    <div class="header-actions">
+    <div class="model-dropdown">
+      <button id="model-dropdown-btn">Gemini 1.5 Flash ▼</button>
+      <div class="model-options">
+        <div class="model-option" data-model="gemini-1.5-flash">
+          <span class="model-icon">⚡</span>
+          <div class="model-text">
+            <strong>1.5 Flash</strong>
+            <p>Fast & efficient responses</p>
+          </div>
+          <span class="checkmark"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#207efd"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg></span>
+        </div>
+        <div class="model-option" data-model="gemini-2.0-flash">
+          <span class="model-icon">✨</span>
+          <div class="model-text">
+            <strong>2.0 Flash</strong>
+            <p>More advanced reasoning</p>
+          </div>
+          <span class="checkmark"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#207efd"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg></span>
+        </div>
+      </div>
+    </div>
+
+       <!-- Changelog Button -->
+       <button id="open-changelog">
+       <dotlottie-player src="https://lottie.host/8c7347bd-3874-458f-b07a-4b7a3f25aa63/1t5Rg7OmQp.lottie" 
+        background="transparent" speed="1" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;" 
+        loop autoplay></dotlottie-player>
+    </button>      
+     <!-- User Authentication Buttons -->
+     <button id="login-btn">Sign In</button>
+     <button id="register-btn">Sign Up</button>
+     <button id="logout-btn" style="display: none;">Logout</button> <!-- ✅ Initially Hidden -->
+
+     <!-- Logo -->
+     <img src="images/gemini_icon.png" alt="Logo" class="header-logo"> 
+    </div>
+  </header>
+
+<!-- Changelog Popup -->
+<div id="changelog-popup" class="popup-overlay">
+  <div class="popup-content">
+      <div id="changelog-container"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="#7D71FF"></stop><stop offset=".3" stop-color="#7D71FF" stop-opacity=".9"></stop><stop offset=".6" stop-color="#7D71FF" stop-opacity=".6"></stop><stop offset=".8" stop-color="#7D71FF" stop-opacity=".3"></stop><stop offset="1" stop-color="#7D71FF" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(#a12)" stroke-width="2" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="0.9" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity=".2" stroke="#7D71FF" stroke-width="2" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg></div>
+      <button id="close-changelog-btn">Close</button> <!-- ✅ Ensure only ONE close button -->
+  </div>
+</div>
+
+
+
+  <!-- Info Popup -->
+  <div id="info-popup" class="popup-overlay">
+    <div class="popup-content">
+      <h2>Welcome to My Chatbot</h2>
+      <p>Created by <strong>Nikesh Singh</strong></p>
+
+      <div class="social-links">
+        <p>GitHub:
+          <a href="https://github.com/singh-nikesh" target="_blank" class="social-icon">
+            <dotlottie-player src="https://lottie.host/12509ab2-88b5-4a84-9eea-521bd6b6f4d3/cmH1sdcsl9.lottie"
+              background="transparent" speed="1" style="width: 50px; height: 50px" loop autoplay></dotlottie-player>
+          </a>
+        </p>
+        <p>LinkedIn:
+          <a href="https://www.linkedin.com/in/singh-nikesh/" target="_blank" class="social-icon">
+            <dotlottie-player src="https://lottie.host/c8be9f5e-b34b-40a1-98da-8efd423a450b/Xe48EbnxF8.lottie"
+              background="transparent" speed="1" style="width: 50px; height: 50px" loop autoplay></dotlottie-player>
+          </a>
+        </p>
+      </div>
+
+      <p>Note: This is hosted on a free hosting platform Render with limited resources</p>
+      <p>Resources Used: Various open-source internet materials</p>
+      <p><strong style="font-size:small">Disclaimer:</strong> Responses may be inaccurate or slow/inactive. Information
+        should be verified before use. This chatbot is for educational purposes only and does not provide professional
+        advice.</p>
+
+      <button id="close-popup">Got it!</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- App Header -->
+    <header class="app-header" style="margin-top: 40px;">
+      <h1 class="heading">Hello, there</h1>
+      <h4 class="sub-heading">How can I help you today?</h4>
+      <p id="model-info" class="model-info">Gemini 1.5 Flash is a fast and versatile multimodal model for scaling across diverse tasks.</p>
+    </header>
+          <!-- Suggestions List -->
+      <ul class="suggestions">
+        <li class="suggestions-item">
+          <p class="text">Design a home office setup for remote work under $500.</p>
+          <span class="icon material-symbols-rounded">draw</span>
+        </li>
+        <li class="suggestions-item">
+          <p class="text">How can I level up my web development expertise in 2025?</p>
+          <span class="icon material-symbols-rounded">lightbulb</span>
+        </li>
+        <li class="suggestions-item">
+          <p class="text">Suggest some useful tools for debugging JavaScript code.</p>
+          <span class="icon material-symbols-rounded">explore</span>
+        </li>
+        <li class="suggestions-item">
+          <p class="text">Create a React JS component for the simple todo list app.</p>
+          <span class="icon material-symbols-rounded">code_blocks</span>
+        </li>
+      </ul>
+
+    <!-- Chats -->
+    <div class="chats-container">
+      <div id="chatbox"></div>
+    </div>
+    <!-- Prompt Input -->
+    <div class="prompt-container">
+      <div class="prompt-wrapper">
+        <form action="#" class="prompt-form">
+          <input type="text" placeholder="Ask NiCKK" id="message" class="prompt-input" required />
+          <div class="prompt-actions">
+            <!-- File Upload Wrapper -->
+            <div class="file-upload-wrapper">
+              <img src="#" class="file-preview" />
+              <input id="file-input" type="file" accept="image/*, .pdf, .txt, .csv" hidden />
+              <button type="button" class="file-icon material-symbols-rounded">description</button>
+              <button type="submit">Send</button>
+              <button id="cancel-file-btn" type="button" class="material-symbols-rounded">close</button>
+              <!-- <button id="add-file-btn" type="button" class="material-symbols-rounded">attach_file</button> -->
+            </div>
+            <!-- Send Prompt and Stop Response Buttons -->
+            <button id="stop-response-btn" type="button" class="material-symbols-rounded">stop_circle</button>
+            <button id="send-prompt-btn" type="submit" class="material-symbols-rounded">arrow_upward</button>
+
+          </div>
+        </form>
+        <!-- Theme and Delete Chats Buttons -->
+        <button id="theme-toggle-btn" class="material-symbols-rounded">light_mode</button>
+        <button id="delete-chats-btn" class="material-symbols-rounded">delete</button>
+      </div>
+      <p class="disclaimer-text">NiCKK can make mistakes, so double-check it.</p>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>

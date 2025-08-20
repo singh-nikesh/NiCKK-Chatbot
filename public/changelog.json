@@ -1,0 +1,28 @@
+{
+    "versions": [
+      {
+        "version": "1.2.0",
+        "date": "March 1, 2025",
+        "changes": [
+          "Added changlog to track new changes",
+          "Improved UI with a fixed header."
+        ]
+      },
+      {
+        "version": "1.1.0",
+        "date": "Feb 28, 2025",
+        "changes": [
+          "Added model switcher for Gemini 1.5 Flash & Gemini 2.0 Flash.",
+          "Implemented dynamic model descriptions."
+        ]
+      },
+      {
+        "version": "1.0.0",
+        "date": "Feb 26, 2025",
+        "changes": [
+          "Initial release with Gemini API integration."
+        ]
+      }
+    ]
+  }
+  
