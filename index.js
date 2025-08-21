@@ -29,6 +29,7 @@ const pool = new Pool({
 });
 
 
+
 app.use(bodyParser.json());
 // ✅ Middleware to Verify JWT
 const authenticateUser = (req, res, next) => {
