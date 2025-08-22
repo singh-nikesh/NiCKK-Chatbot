@@ -465,5 +465,3 @@ document.addEventListener("DOMContentLoaded", () => {
         checkUserAuth();
     });
 });
-
-
