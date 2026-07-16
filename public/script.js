@@ -11,18 +11,27 @@ const modelDropdownBtn = document.getElementById("model-dropdown-btn");
 const modelOptions = document.querySelectorAll(".model-option");
 const modelInfo = document.getElementById("model-info");
 
-// Model descriptions
-const modelDescriptions = {
-    "gemini-1.5-flash": "Gemini 1.5 Flash is a fast and versatile multimodal model for scaling across diverse tasks.",
-    "gemini-2.0-flash": "Gemini 2.0 Flash delivers next-gen features and improved capabilities, including superior speed, native tool use, multimodal generation, and a 1M token context window."
+// Model display names + descriptions (single source of truth now)
+// NOTE: the "data-model" attribute on each .model-option element in your HTML
+// must match these keys exactly (e.g. data-model="gemini-3.1-flash-lite").
+const modelData = {
+    "gemini-3.1-flash-lite": {
+        label: "Gemini 3.1 Flash Lite",
+        description: "Gemini 3.1 Flash Lite is Google's fastest, most cost-efficient Gemini 3 series model, ideal for high-volume, latency-sensitive tasks."
+    }
 };
-let selectedModel = localStorage.getItem("selectedModel") || "gemini-1.5-flash";
+
+// Default model — updated to the new model
+let selectedModel = localStorage.getItem("selectedModel") || "gemini-3.1-flash-lite";
+
 // Update button text on page load
 updateDropdownText(selectedModel);
+
 // Toggle dropdown visibility
 modelDropdownBtn.addEventListener("click", () => {
     modelDropdown.classList.toggle("active");
 });
+
 // Handle model selection
 modelOptions.forEach(option => {
     option.addEventListener("click", (event) => {
@@ -33,17 +42,22 @@ modelOptions.forEach(option => {
         console.log(`Switched to model: ${selectedModel}`);
     });
 });
-// Update dropdown button text based on selected model
+
+// Update dropdown button text based on selected model (now generic, works for any model in modelData)
 function updateDropdownText(model) {
-    let text = model === "gemini-1.5-flash" ? "Gemini 1.5 Flash" : "Gemini 2.0 Flash";
-    modelDropdownBtn.innerHTML = text + ' <svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="35px" fill="#e3e3e3"><path d="M480-360 280-559h400L480-360Z"/></svg>';
+    const info = modelData[model] || { label: model, description: "" };
+
+    modelDropdownBtn.innerHTML = info.label + ' <svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="35px" fill="#e3e3e3"><path d="M480-360 280-559h400L480-360Z"/></svg>';
+
     // Remove "selected" class from all options
     modelOptions.forEach(option => option.classList.remove("selected"));
 
-    // Add "selected" class to the correct option
-    document.querySelector(`.model-option[data-model="${model}"]`).classList.add("selected");
-     // Update model description
-     modelInfo.textContent = modelDescriptions[model];
+    // Add "selected" class to the correct option (if it exists in the DOM)
+    const matchingOption = document.querySelector(`.model-option[data-model="${model}"]`);
+    if (matchingOption) matchingOption.classList.add("selected");
+
+    // Update model description
+    modelInfo.textContent = info.description;
 }
 
 // Fetch API Key from backend before making requests
@@ -55,11 +69,10 @@ fetch("/api/config")
         // console.log("API Key loaded successfully"); // Debugging
     })
     .catch(error => console.error("Error fetching API key:", error));
+
 const getApiUrl = () => {
     return `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${API_KEY}`;
 }
-// Change model when user selects a different one
-
 
 let controller, typingInterval;
 const chatHistory = [];
@@ -145,10 +158,10 @@ const generateResponse = async (botMsgDiv) => {
         let responseText = data.candidates[0].content.parts[0].text.replace(/\*\*([^*]+)\*\*/g, "$1").trim();
         responseText = responseFilter(responseText);
 
-        // ✅ Apply structured formatting (headers, lists, code)
+        // Apply structured formatting (headers, lists, code)
         responseText = formatStructuredResponse(responseText);
 
-        // ✅ Wrap message properly
+        // Wrap message properly
         botMsgDiv.innerHTML = `
             <div style="display: flex; align-items: flex-start; gap: 10px;">
                 <dotlottie-player 
@@ -164,7 +177,7 @@ const generateResponse = async (botMsgDiv) => {
 
         chatHistory.push({ role: "model", parts: [{ text: responseText }] });
 
-        // ✅ Highlight code blocks
+        // Highlight code blocks
         document.querySelectorAll("pre code").forEach((block) => {
             hljs.highlightElement(block);
         });
@@ -173,15 +186,12 @@ const generateResponse = async (botMsgDiv) => {
         textElement.textContent = error.message;
         textElement.style.color = "#d62939";
     } finally {
-        document.body.classList.remove("bot-responding"); // ✅ Enable new message input
-        botMsgDiv.classList.remove("loading"); // ✅ Ensure message is fully displayed
+        document.body.classList.remove("bot-responding"); // Enable new message input
+        botMsgDiv.classList.remove("loading"); // Ensure message is fully displayed
         userData.file = {};
         scrollToBottom();
     }
 };
-
-
-
 
 const formatCodeBlocks = (text) => {
     return text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
@@ -217,12 +227,12 @@ const formatStructuredResponse = (text) => {
     return text;
 };
 
-
 const customResponses = {
     "who made you": "I was built using AI technologies to assist users like you!",
     "who are you": "I am your personal AI assistant, designed to provide helpful responses.",
     "what is your purpose": "I am here to assist with any questions you have!"
 };
+
 // Handle the form submission
 const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -242,7 +252,7 @@ const handleFormSubmit = (e) => {
     scrollToBottom();
 
     setTimeout(() => {
-        // ✅ Ensure "Just a sec..." is left-aligned
+        // Ensure "Just a sec..." is left-aligned
         const botMsgDiv = createMessageElement(`
             <div style="display: flex; align-items: flex-start; gap: 10px;">
                 <dotlottie-player 
@@ -263,15 +273,12 @@ const handleFormSubmit = (e) => {
     }, 600);
 };
 
-
-// ✅ Reset UI after bot response
+// Reset UI after bot response
 document.querySelector("#stop-response-btn").addEventListener("click", () => {
     controller?.abort();
-    document.body.classList.remove("bot-responding"); // ✅ Allow new messages
+    document.body.classList.remove("bot-responding"); // Allow new messages
     chatsContainer.querySelector(".bot-message.loading")?.classList.remove("loading");
 });
-
-
 
 // Attach event listeners
 promptForm.addEventListener("submit", handleFormSubmit);
@@ -292,24 +299,24 @@ document.addEventListener("DOMContentLoaded", () => {
     let changelogLoaded = false;
     let changelogContent = "";
 
-    // ✅ Prevent scrolling when popups are open
+    // Prevent scrolling when popups are open
     function toggleBodyScroll(disable) {
         document.body.classList.toggle("no-scroll", disable);
     }
 
-    // ✅ Function to Open Any Popup
+    // Function to Open Any Popup
     function openPopup(popup) {
         popup.classList.add("active");
         toggleBodyScroll(true);
     }
 
-    // ✅ Function to Close Any Popup
+    // Function to Close Any Popup
     function closePopupHandler(popup) {
         popup.classList.remove("active");
         toggleBodyScroll(false);
     }
 
-    // ✅ Function to Load Changelog from JSON
+    // Function to Load Changelog from JSON
     async function loadChangelog() {
         if (changelogLoaded) return; // Prevent duplicate fetch calls
         try {
@@ -318,7 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             changelogContent = formatChangelog(data);
-            changelogContainer.innerHTML = changelogContent; // ✅ Store content before showing popup
+            changelogContainer.innerHTML = changelogContent; // Store content before showing popup
             changelogLoaded = true;
         } catch (error) {
             changelogContainer.innerHTML = "<p>Error loading changelog. Please try again.</p>";
@@ -338,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return html;
     }
 
-    // ✅ Show info popup only on first visit
+    // Show info popup only on first visit
     if (!localStorage.getItem("popupShown")) {
         setTimeout(() => {
             openPopup(infoPopup);
@@ -349,20 +356,20 @@ document.addEventListener("DOMContentLoaded", () => {
         closePopupHandler(infoPopup);
         localStorage.setItem("popupShown", "true");
 
-        // ✅ Preload changelog before opening popup
+        // Preload changelog before opening popup
         changelogContainer.innerHTML = "<p>Loading changelog...</p>";
-        await loadChangelog(); // ✅ Load before showing popup
+        await loadChangelog(); // Load before showing popup
 
         setTimeout(() => {
             openPopup(changelogPopup);
         }, 500);
     });
 
-    // ✅ Open Changelog Popup Correctly
+    // Open Changelog Popup Correctly
     function openChangelogPopup() {
         openPopup(changelogPopup);
         if (changelogLoaded) {
-            changelogContainer.innerHTML = changelogContent; // ✅ Use stored content
+            changelogContainer.innerHTML = changelogContent; // Use stored content
         } else {
             changelogContainer.innerHTML = "<p>Loading changelog...</p>";
             loadChangelog();
@@ -377,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
         closePopupHandler(changelogPopup);
     });
 
-    // ✅ Close Popup When Clicking Outside
+    // Close Popup When Clicking Outside
     changelogPopup?.addEventListener("click", (event) => {
         if (event.target === changelogPopup) {
             closePopupHandler(changelogPopup);
@@ -385,14 +392,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
 document.addEventListener("DOMContentLoaded", () => {
     const loginBtn = document.getElementById("login-btn");
     const registerBtn = document.getElementById("register-btn");
     const logoutBtn = document.getElementById("logout-btn");
     const chatbotContainer = document.querySelector(".prompt-container");
 
-    // ✅ Check if user is logged in
+    // Check if user is logged in
     function checkUserAuth() {
         const token = localStorage.getItem("token");
         if (token) {
@@ -404,13 +410,13 @@ document.addEventListener("DOMContentLoaded", () => {
             loginBtn.style.display = "block";
             registerBtn.style.display = "block";
             logoutBtn.style.display = "none";
-            chatbotContainer.style.display = "none"; // ✅ Hide chatbot for non-logged-in users
+            chatbotContainer.style.display = "none"; // Hide chatbot for non-logged-in users
         }
     }
 
     checkUserAuth();
 
-    // ✅ Handle Registration
+    // Handle Registration
     registerBtn.addEventListener("click", async () => {
         const email = prompt("Enter your email:");
         const password = prompt("Enter your password:");
@@ -431,7 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ✅ Handle Login
+    // Handle Login
     loginBtn.addEventListener("click", async () => {
         const email = prompt("Enter your email:");
         const password = prompt("Enter your password:");
@@ -458,7 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ✅ Handle Logout
+    // Handle Logout
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("token");
         alert("Logged out successfully!");
