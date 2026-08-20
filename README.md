@@ -9,7 +9,7 @@ It comes with a modern web-based UI for seamless interaction, featuring a clean 
 
 🚀 Features
 
-💬 Conversational AI powered by Gemini 2.0 Flash API
+💬 Conversational AI powered by Gemini 3.1 Flash Lite API
 
 🎨 Modern UI with dark theme
 
