@@ -29,7 +29,7 @@ Backend: Node.js
 
 AI Engine: Gemini API
 
-Deployment: Render
+Deployment: Vercel
 
 
 👨‍💻 Author: Nikesh Singh
